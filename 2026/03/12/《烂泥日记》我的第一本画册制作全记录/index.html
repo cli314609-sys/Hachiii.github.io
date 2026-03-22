@@ -294,6 +294,87 @@
 
 
 		
+			<div class="kira-widget" id="custom-website-info">
+    <div class="kira-widget-title" style="color: #2b426b; font-weight: bold; border-bottom: 1px dashed #eee; padding-bottom: 10px; margin-bottom: 10px;">
+        <i class="kirafont icon-chart"></i> 网站信息
+    </div>
+    
+    <div class="site-info-content">
+        <div class="site-info-item">
+            <span class="info-label">文章数目</span>
+            <span class="info-value">3</span>
+        </div>
+        
+        <div class="site-info-item">
+            <span class="info-label">运行时间</span>
+            <span class="info-value" id="blog_running_days">计算中...</span>
+        </div>
+        
+        <div class="site-info-item" id="busuanzi_container_site_uv" style="display: none;">
+            <span class="info-label">本站访客</span>
+            <span class="info-value" id="busuanzi_value_site_uv"></span>
+        </div>
+        
+        <div class="site-info-item" id="busuanzi_container_site_pv" style="display: none;">
+            <span class="info-label">总浏览量</span>
+            <span class="info-value" id="busuanzi_value_site_pv"></span>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 强制卡片样式，无视主题底层 */
+#custom-website-info {
+    background: #fff;            /* 纯白背景 */
+    border-radius: 12px;         /* 这里的圆角你可以根据喜好调整 */
+    padding: 16px;               /* 内部留白 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* 淡淡的阴影，增加高级感 */
+    margin-bottom: 20px;         /* 和下方卡片的间距 */
+    transition: all 0.3s ease;
+}
+
+#custom-website-info:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* 鼠标悬停效果 */
+    transform: translateY(-2px);
+}
+
+.site-info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+}
+
+.info-label {
+    color: #888;
+}
+
+.info-value {
+    color: #a7efff; /* 你喜欢的靛蓝色 */
+    font-weight: 600;
+}
+</style>
+
+<script>
+    (function() {
+        // 修改为你的真实建站日期
+        var birthDay = new Date("2026/02/26"); 
+        var now = new Date();
+        var duration = Math.floor((now - birthDay) / (1000 * 60 * 60 * 24));
+        document.getElementById("blog_running_days").innerHTML = (duration > 0 ? duration : 0) + " 天";
+        
+        var checkBusuanzi = setInterval(function() {
+            var uvContainer = document.getElementById("busuanzi_container_site_uv");
+            var pvContainer = document.getElementById("busuanzi_container_site_pv");
+            if (uvContainer && pvContainer && document.getElementById("busuanzi_value_site_uv").innerHTML !== "") {
+                uvContainer.style.display = "flex";
+                pvContainer.style.display = "flex";
+                clearInterval(checkBusuanzi);
+            }
+        }, 500);
+    })();
+</script>
+		
 	</aside>
 	<div class="kira-copyright">
 		&copy; 2026
@@ -444,11 +525,11 @@
   
 	<div class="kira-post-nav">
 		<nav class="post-nav">
-			      
+			  
 			<!-- 先找到与当前文字相同的目录 -->
 			   
 			<!-- 在找到当前文章所在的 index -->
-			          
+			              
 		</nav>
 	</div>
 	
@@ -459,7 +540,10 @@
 		
 			<a class="kirafont icon-tag-fill -none-link" href="/tags/%E6%97%A0%E7%94%A8%E7%85%A7%E7%89%87%E6%A1%A3%E6%A1%88%E9%83%A8/" rel="tag">无用照片档案部</a>
 		
-	</div>
+		<span id="busuanzi_container_page_pv" style="margin-left: 15px; color: #2b426b;">
+        <i class="kirafont icon-view"></i> 阅读量：<span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    </div>
 	
 	<div class="kira-post-footer">
 		
@@ -488,7 +572,6 @@
 	</div>
 	
 </div>
-
 				</div>
 			</div>
 			<div class="kira-right-column">
@@ -500,5 +583,6 @@
 </div>
 
 		</div>
+		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 	</body>
 </html>
