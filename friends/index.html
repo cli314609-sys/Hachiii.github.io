@@ -295,7 +295,7 @@
 
 		
 			<div class="kira-widget" id="custom-website-info">
-    <div class="kira-widget-title" style="color: #2b426b; font-weight: bold; border-bottom: 1px dashed #eee; padding-bottom: 10px; margin-bottom: 10px;">
+    <div class="kira-widget-title" style="color: #a7efff; font-weight: bold; border-bottom: 1px dashed #eee; padding-bottom: 10px; margin-bottom: 10px;">
         <i class="kirafont icon-chart"></i> 网站信息
     </div>
     
@@ -325,11 +325,11 @@
 <style>
 /* 强制卡片样式，无视主题底层 */
 #custom-website-info {
-    background: #fff;            /* 纯白背景 */
-    border-radius: 12px;         /* 这里的圆角你可以根据喜好调整 */
-    padding: 16px;               /* 内部留白 */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* 淡淡的阴影，增加高级感 */
-    margin-bottom: 20px;         /* 和下方卡片的间距 */
+    background: #fff;
+    border-radius: 16px; 
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
     transition: all 0.3s ease;
 }
 
@@ -341,8 +341,9 @@
 .site-info-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 13.5px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #555; /* 让标签颜色稍微深一点，增加可读性 */
 }
 
 .info-label {
@@ -497,5 +498,66 @@
 
 		</div>
 		<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-	</body>
+<link rel="stylesheet" href="/custom.css">
+
+<button id="dark-mode-toggle" style="
+    position: fixed;
+    bottom: 80px; 
+    right: 30px;
+    z-index: 9999;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+">
+    🌓
+</button>
+
+<script>
+  const toggleBtn = document.getElementById('dark-mode-toggle');
+  const htmlEl = document.documentElement;
+
+  // 1. 初始化主题：加入时间判断逻辑
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const currentHour = new Date().getHours(); // 获取当前系统时间的小时 (0-23)
+    
+    // 3. 满足需求：如果用户手动记录过黑夜，或者（用户没手动记录过 且 当前时间大于等于19点或小于6点）
+    if (savedTheme === 'dark' || (!savedTheme && (currentHour >= 19 || currentHour < 6))) {
+      htmlEl.setAttribute('data-theme', 'dark');
+    } else if (savedTheme === 'light') {
+      htmlEl.removeAttribute('data-theme');
+    } else {
+      htmlEl.removeAttribute('data-theme'); // 默认白天
+    }
+  }
+
+  // 页面加载时立即执行初始化判断
+  initTheme();
+
+  // 2. 绑定右下角按钮的点击事件（保留你手动强制切换的权利）
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      let currentTheme = htmlEl.getAttribute('data-theme');
+      if (currentTheme === 'dark') {
+        htmlEl.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light'); // 记忆：用户觉得黑夜太黑，强制切回了白天
+      } else {
+        htmlEl.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');  // 记忆：用户觉得白天太亮，强制切到了黑夜
+      }
+    });
+  }
+</script>
+
+</body>
 </html>

@@ -15,20 +15,120 @@
     background-color: rgba(63, 81, 181, 0.1) !important;
     color: #3f51b5 !important;
 }
-/* 1. 强制修改头图外框：抹除主题默认高度，改用固定比例 */
-.nexmoe-post .article .article-cover {
-    height: auto !important;
-    padding-bottom: 0 !important; /* 必须删掉这个，否则 aspect-ratio 会失效 */
-    aspect-ratio: 4 / 3 !important; /* 这就是你想要的固定比例，数字越大越扁 */
-    border-radius: 16px !important;
-    overflow: hidden !important;
+/* 1. 白天模式（默认）- 恢复你最初舒适的排版颜色 */
+:root {
+    --bg-color: #f5f5f5;
+    --text-color: #333333;  /* 恢复标准的深灰色字体，白天看起来最清晰舒服 */
+    --theme-color: #4b0082; /* 这是你原本的靛蓝色（图标、链接、按钮颜色） */
+    --border-color: #e3e8f7; /* Kira 主题自带的柔和边框色 */
 }
-/* 2. 强制修改内部图片：确保它充满上面的框，并微调位置防止“断头” */
-.nexmoe-post .article .article-cover .article-cover-inner {
-    position: relative !important;
-    display: block !important;
-    height: 100% !important;
-    width: 100% !important;
-    background-size: cover !important; /* 填满格子 */
-    background-position: center 20% !important; /* 20% 会让图片往上提一点，这样不容易切到人脸 */
+
+/* 2. 黑夜模式 - 颜色变淡（不改变原本的色系） */
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #ffffff;    /* 修改这里：从 #b0b0b0 改为 #ffffff */
+    --theme-color: #9370db;
+    --border-color: transparent; 
+}
+
+/* 3. 黑夜模式的卡片：实现透明化、无边框，且绝对不破坏结构 */
+[data-theme="dark"] .kira-card,
+[data-theme="dark"] .kira-sidebar .kira-card,
+[data-theme="dark"] .kira-widgets .kira-card,
+[data-theme="dark"] .kira-main-content {
+    /* 【卡片透明化核心】使用带 5% 透明度的白色叠加在黑底上，形成高级的“磨砂玻璃/半透明”质感 */
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    
+    /* 安全去除边框，坚决不碰排版结构 */
+    border: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    
+    /* 添加一点深色的弥散阴影，让半透明卡片“浮”在背景上 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+    
+    /* 让卡片内的基础文字继承我们上面设置的变淡的颜色 */
+    color: var(--text-color) !important;
+}
+
+/* 4. 专项优化黑夜模式下的文章正文（确保阅读体验） */
+[data-theme="dark"] .kira-post-content p,
+[data-theme="dark"] .kira-post-content li {
+    color: #ffffff !important; /* 正文文字再稍微提亮一点点，防止大段阅读眼睛疲劳 */
+}
+/* 3. 让页面元素使用这些变量 (平滑过渡) */
+body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* 注意：以下类名(.card, .sidebar等)可能需要你按F12检查Kira主题的具体类名进行替换 */
+.card, .post-content, .sidebar, .navbar, .box {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    transition: background-color 0.4s ease;
+}
+/* 专项优化：黑夜模式下的文章正文阅读体验 */
+[data-theme="dark"] .kira-post-content p,
+[data-theme="dark"] .kira-post-content li {
+    color: #ffffff !important; /* 修改这里：从 #cccccc 改为 #ffffff */
+}
+/* --- 强制黑夜模式全文字变白（不影响图标颜色） --- */
+[data-theme="dark"] body,
+[data-theme="dark"] .kira-main-content,
+[data-theme="dark"] .kira-card,
+[data-theme="dark"] .kira-post-content,
+[data-theme="dark"] a,             /* 强制所有链接变白，解决标题紫色问题 */
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
+[data-theme="dark"] p, [data-theme="dark"] li,
+[data-theme="dark"] .kira-item {
+    color: #cccbcb !important;      /* 强制设为白色 */
+    text-shadow: none !important;   /* 去除可能存在的阴影 */
+}
+/* ============================================================
+   黑夜模式：卡片透明化与文字增亮补丁 (追加模式)
+   ============================================================ */
+
+/* 1. 仅让黑夜模式下的独立卡片和主内容区透明 */
+[data-theme="dark"] .kira-card,
+[data-theme="dark"] .kira-main-content {
+    background-color: rgba(255, 255, 255, 0.07) !important; /* 透明度 */
+    backdrop-filter: blur(8px) !important;                /* 毛玻璃模糊 */
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: none !important;                                /* 彻底去边框 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;    /* 增加悬浮感 */
+}
+
+/* 2. 修正侧边栏：撤销之前可能对整个侧边栏区域设置的透明，让它回归底色 */
+[data-theme="dark"] .kira-sidebar,
+[data-theme="dark"] .kira-right-column {
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+}
+
+/* 3. 全局文字白色覆盖：确保 Lani Diary 标题和正文在黑夜里足够清晰 */
+[data-theme="dark"] .kira-card,
+[data-theme="dark"] .kira-card a,
+[data-theme="dark"] .kira-main-content,
+[data-theme="dark"] .kira-post-content p,
+[data-theme="dark"] .kira-post-content li,
+[data-theme="dark"] .kira-post-title,
+[data-theme="dark"] .kira-post-title a {
+    color: #ffffff !important;
+}
+
+/* 4. 细节：保持图标（i标签）依然使用你的淡紫色主题色，不被刷白 */
+[data-theme="dark"] .kira-card i {
+    color: var(--theme-color) !important;
+}
+#custom-website-info {
+    /* ... 你之前的代码 ... */
+    
+    width: auto;               /* 关键：让宽度自动适应父容器 */
+    margin-left: 18px;         /* 这里的数值可以根据 Archive 卡片的实际间距微调 */
+    margin-right: 18px;        /* 确保左右间距一致 */
+    box-sizing: border-box;    /* 关键：确保 padding 不会额外撑开宽度 */
 }
