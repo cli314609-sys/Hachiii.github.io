@@ -526,11 +526,11 @@
   
 	<div class="kira-post-nav">
 		<nav class="post-nav">
-			  
+			      
 			<!-- 先找到与当前文字相同的目录 -->
 			   
 			<!-- 在找到当前文章所在的 index -->
-			              
+			          
 		</nav>
 	</div>
 	
@@ -619,13 +619,14 @@
     const currentHour = new Date().getHours(); // 获取当前系统时间的小时 (0-23)
     
     // 3. 满足需求：如果用户手动记录过黑夜，或者（用户没手动记录过 且 当前时间大于等于19点或小于6点）
-    if (savedTheme === 'dark' || (!savedTheme && (currentHour >= 19 || currentHour < 6))) {
-      htmlEl.setAttribute('data-theme', 'dark');
-    } else if (savedTheme === 'light') {
-      htmlEl.removeAttribute('data-theme');
-    } else {
-      htmlEl.removeAttribute('data-theme'); // 默认白天
-    }
+    // 替换掉原有的 if...else 部分
+        if (hour >= 19 || hour < 7) {
+            // 晚上 7 点以后，或者早上 7 点以前，设置为黑夜模式
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            // 其余时间（早上 7 点到晚上 19 点之间）设置为白天模式
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
   }
 
   // 页面加载时立即执行初始化判断
