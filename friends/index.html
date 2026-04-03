@@ -526,21 +526,45 @@
   const toggleBtn = document.getElementById('dark-mode-toggle');
   const htmlEl = document.documentElement;
 
-  // 1. 初始化主题：加入时间判断逻辑
-  function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const currentHour = new Date().getHours(); // 获取当前系统时间的小时 (0-23)
-    
-    // 3. 满足需求：如果用户手动记录过黑夜，或者（用户没手动记录过 且 当前时间大于等于19点或小于6点）
-    // 替换掉原有的 if...else 部分
-        if (hour >= 19 || hour < 7) {
-            // 晚上 7 点以后，或者早上 7 点以前，设置为黑夜模式
-            document.documentElement.setAttribute('data-theme', 'dark');
+  (function() {
+    function applyTheme(isAutoCheck) {
+        // 检查用户是否手动选择过主题
+        const manualTheme = localStorage.getItem('user-manual-theme');
+        
+        // 如果是每分钟一次的自动检查 (isAutoCheck 为 true)，且用户手动选过，则不执行自动逻辑
+        if (isAutoCheck && manualTheme) return;
+
+        if (manualTheme) {
+            document.documentElement.setAttribute('data-theme', manualTheme);
         } else {
-            // 其余时间（早上 7 点到晚上 19 点之间）设置为白天模式
-            document.documentElement.setAttribute('data-theme', 'light');
+            // 没有任何手动记录时，执行你的昼夜自动逻辑
+            const hour = new Date().getHours();
+            if (hour >= 19 || hour < 7) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
         }
-  }
+    }
+
+    // 1. 页面加载时执行（非自动检查）
+    applyTheme(false);
+
+    // 2. 核心补丁：监听你的手动切换按钮
+    const themeBtn = document.querySelector('.kira-theme-mode');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            // 延迟一瞬，等待 Kira 主题自身的切换逻辑完成后，记录它当前的状态
+            setTimeout(() => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                localStorage.setItem('user-manual-theme', currentTheme);
+            }, 50);
+        });
+    }
+
+    // 3. 每分钟自动检查（标记为自动检查）
+    setInterval(() => applyTheme(true), 60000);
+})();
 
   // 页面加载时立即执行初始化判断
   initTheme();
